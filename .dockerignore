@@ -1,0 +1,10 @@
+#Ignoring git and cache folders
+.git
+.cache
+
+gke-load-tester-env/
+__pycache__/
+uploads/
+README.txt
+samplelocustfile.py
+samplerequirements.txt

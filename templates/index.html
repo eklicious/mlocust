@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>1) Upload your Locust file 2) Upload your requirements.txt file 3) Initialize your GKE cluster 4) Modify your immediate requests/sec to scale your testing 5) PLEASE CLEANUP EVERYTHING WHEN DONE!</h1>
+    <form method=post enctype=multipart/form-data>
+      Cluster Name: <input type="text" id="clusterNm" name="clusterNm" value={{ request.args.get('clusterNm') if request.args.get('clusterNm') }}>&nbsp;&nbsp;&nbsp&nbsp;
+      <input type=file name=file>
+      <input type=submit value="Upload your locust file and requirements file here"><br/>
+
+      <label for="zone">Select a Zone close to your MDB Cluster:</label>
+      <select name="zone" id="zone">
+        <option value="asia-east1-a" {{ 'selected' if request.args.get('zone')=='asia-east1-a' else '' }}>asia-east1-a (Taiwan)</option>
+        <option value="asia-east2-a" {{ 'selected' if request.args.get('zone')=='asia-east2-a' else '' }}>asia-east2-a (Hong Kong)</option>
+        <option value="asia-northeast1-a" {{ 'selected' if request.args.get('zone')=='asia-northeast1-a' else '' }}>asia-northeast1-a (Tokyo)</option>
+        <option value="asia-northeast2-a" {{ 'selected' if request.args.get('zone')=='asia-northeast2-a' else '' }}>asia-northeast2-a (Osaka)</option>
+        <option value="asia-northeast3-a" {{ 'selected' if request.args.get('zone')=='asia-northeast3-a' else '' }}>asia-northeast3-a (Seoul)</option>
+        <option value="asia-south1-a" {{ 'selected' if request.args.get('zone')=='asia-south1-a' else '' }}>asia-south1-a (Mumbai)</option>
+        <option value="asia-south2-a" {{ 'selected' if request.args.get('zone')=='asia-south2-a' else '' }}>asia-south2-a (Delhi)</option>
+        <option value="asia-southeast1-a" {{ 'selected' if request.args.get('zone')=='asia-southeast1-a' else '' }}>asia-southeast1-a (Singapore)</option>
+        <option value="australia-southeast1-a" {{ 'selected' if request.args.get('zone')=='australia-southeast1-a' else '' }}>australia-southeast1-a (Sydney)</option>
+        <option value="europe-north1-a" {{ 'selected' if request.args.get('zone')=='europe-north1-a' else '' }}>europe-north1-a (Finland)</option>
+        <option value="europe-west1-b" {{ 'selected' if request.args.get('zone')=='europe-west1-b' else '' }}>europe-west1-b (Belgium)</option>
+        <option value="europe-west2-a" {{ 'selected' if request.args.get('zone')=='europe-west2-a' else '' }}>europe-west2-a (London)</option>
+        <option value="europe-west3-a" {{ 'selected' if request.args.get('zone')=='europe-west3-a' else '' }}>europe-west3-a (Frankfurt)</option>
+        <option value="europe-west4-a" {{ 'selected' if request.args.get('zone')=='europe-west4-a' else '' }}>europe-west4-a (Netherlands)</option>
+        <option value="europe-west6-a" {{ 'selected' if request.args.get('zone')=='europe-west6-a' else '' }}>europe-west6-a (Zurich)</option>
+        <option value="northamerica-northeast1-a" {{ 'selected' if request.args.get('zone')=='northamerica-northeast1-a' else '' }}>northamerica-northeast1-a (Montreal)</option>
+        <option value="southamerica-east1-a" {{ 'selected' if request.args.get('zone')=='southamerica-east1-a' else '' }}>southamerica-east1-a (Sao Paulo)</option>
+        <option value="us-central1-a" {{ 'selected' if request.args.get('zone')=='us-central1-a' else '' }}>us-central1-a (Iowa)</option>
+        <option value="us-east1-b" {{ 'selected' if request.args.get('zone')=='us-east1-b' else '' }}>us-east1-b (South Carolina)</option>
+        <option value="us-east4-a" {{ 'selected' if (request.args.get('zone')=='us-east4-a' or request.args.get('zone')==None)  else '' }}>us-east4-a (Virginia)</option>
+        <option value="us-west1-a" {{ 'selected' if request.args.get('zone')=='us-west1-a' else '' }}>us-west1-a (Oregon)</option>
+        <option value="us-west2-a" {{ 'selected' if request.args.get('zone')=='us-west2-a' else '' }}>us-west2-a (Los Angeles)</option>
+        <option value="us-west3-a" {{ 'selected' if request.args.get('zone')=='us-west3-a' else '' }}>us-west3-a (Salt Lake City)</option>
+      </select>&nbsp;&nbsp;&nbsp&nbsp;
+
+      TTL (in SECONDS): <input type="text" id="ttl" name="ttl" value={{ request.args.get('ttl') if request.args.get('ttl') }}>&nbsp;&nbsp;&nbsp&nbsp;
+      Est Max Requests/Sec: <input type="text" id="maxRPS" name="maxRPS" value={{ request.args.get('maxRPS') if request.args.get('maxRPS') }}>&nbsp;&nbsp;&nbsp&nbsp;
+      Immediate Requests/Sec (don't overprovision your cluster if you don't need to. scale to your immediate workload only): <input type="text" id="currentRPS" name="currentRPS" value={{ request.args.get('currentRPS') if request.args.get('currentRPS') }}>&nbsp;&nbsp;&nbsp&nbsp;
+      <input type=submit value="Configure GKE cluster (this takes several mins. Do not resubmit till completed!)"><br/>
+      
+      <input type="checkbox" id="cleanup" name="cleanup" value="cleanup">
+      <label for="cleanup"> Cleanup Everything?</label>&nbsp;&nbsp;&nbsp;&nbsp;<input type=submit value="Delete Cluster?"><br>
+    </form>
+{% endblock %}

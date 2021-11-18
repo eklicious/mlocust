@@ -1,0 +1,14 @@
+<!doctype html>
+<title>mLocust</title>
+{% block body %}{% endblock %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for category, message in messages %}
+      {% autoescape false %}
+         <li class="{{ category }}">{{ category }}: {{ message }}</li>
+      {% endautoescape %}
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}

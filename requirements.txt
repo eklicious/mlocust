@@ -1,0 +1,4 @@
+pymongo
+dnspython
+flask
+google-cloud-storage
