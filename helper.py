@@ -92,7 +92,7 @@ def deploy(projectId, clusterNm, vmSize, zone, maxRPS, currentRPS, ttlSecs):
         # Create a subdirectory for the cluster name. Each cluster gets its own build
         # Based on the locustfile.py and requirements.txt that the user uploads, we need to replace the files in the clone dir above
         msgs.append(get_resp("Fetch latest container codes and update it with user's own locust and requirements file if the file exists."))
-        out = subprocess.run(f"if [ -f 'uploads/{clusterNm}/locustfile.py' ]; then rm -rf {clusterNm} && mkdir {clusterNm} && cd {clusterNm} && git clone https://github.com/eklicious/gke-load-tester && mv ../uploads/{clusterNm}/locustfile.py gke-load-tester/docker-image/locust-tasks/locustfile.py && mv ../uploads/{clusterNm}/requirements.txt gke-load-tester/docker-image/locust-tasks/requirements.txt && cd gke-load-tester && gcloud builds submit --tag gcr.io/{projectId}/{clusterNm}:latest docker-image/.; fi", shell=True, capture_output=True)
+        out = subprocess.run(f"if [ -f 'uploads/{clusterNm}/locustfile.py' ]; then rm -rf {clusterNm} && mkdir {clusterNm} && cd {clusterNm} && git clone https://github.com/eklicious/mlocust-app && mv ../uploads/{clusterNm}/locustfile.py mlocust-app/docker-image/locust-tasks/locustfile.py && mv ../uploads/{clusterNm}/requirements.txt mlocust-app/docker-image/locust-tasks/requirements.txt && cd mlocust-app && gcloud builds submit --tag gcr.io/{projectId}/{clusterNm}:latest docker-image/.; fi", shell=True, capture_output=True)
 
         # This will be the entry point. Whether a cluster is up and running or not. Check for it.
         msgs.append(get_resp("Checking if the cluster already exists or not."))
@@ -137,23 +137,23 @@ def deploy_nodes(projectId, clusterNm, zone):
         # TODO probably best to inline all these commands so we get a single output and not 10
         # First update the k8s yml files to include references to the projectId
         msgs.append(get_resp("Update the K8s yaml files with the appropriate GCR url pointing to the latest cluster container build."))
-        out = subprocess.run(f"sed -i -e \"s/\\[TARGET_HOST\\]/not_used/g\" {clusterNm}/gke-load-tester/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
-        out = subprocess.run(f"sed -i -e \"s/\\[TARGET_HOST\\]/not_used/g\" {clusterNm}/gke-load-tester/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
-        out = subprocess.run(f"sed -i -e \"s/\\[PROJECT_ID\\]/{projectId}/g\" {clusterNm}/gke-load-tester/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
-        out = subprocess.run(f"sed -i -e \"s/\\[PROJECT_ID\\]/{projectId}/g\" {clusterNm}/gke-load-tester/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
-        out = subprocess.run(f"sed -i -e \"s/\\[CLUSTER_NM\\]/{clusterNm}/g\" {clusterNm}/gke-load-tester/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
-        out = subprocess.run(f"sed -i -e \"s/\\[CLUSTER_NM\\]/{clusterNm}/g\" {clusterNm}/gke-load-tester/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"sed -i -e \"s/\\[TARGET_HOST\\]/not_used/g\" {clusterNm}/mlocust-app/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"sed -i -e \"s/\\[TARGET_HOST\\]/not_used/g\" {clusterNm}/mlocust-app/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"sed -i -e \"s/\\[PROJECT_ID\\]/{projectId}/g\" {clusterNm}/mlocust-app/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"sed -i -e \"s/\\[PROJECT_ID\\]/{projectId}/g\" {clusterNm}/mlocust-app/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"sed -i -e \"s/\\[CLUSTER_NM\\]/{clusterNm}/g\" {clusterNm}/mlocust-app/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"sed -i -e \"s/\\[CLUSTER_NM\\]/{clusterNm}/g\" {clusterNm}/mlocust-app/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
 
         # Remember we always have to set kubeconfig in case if there's some concurrency issue
         msgs.append(get_credentials(clusterNm, zone))
 
         # Now apply the yaml files
         msgs.append(get_resp("Apply the yaml files now to the master/workers"))
-        out = subprocess.run(f"kubectl apply -f {clusterNm}/gke-load-tester/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"kubectl apply -f {clusterNm}/mlocust-app/kubernetes-config/locust-master-controller.yaml", shell=True, capture_output=True)
         msgs.append(get_resp(out))
-        out = subprocess.run(f"kubectl apply -f {clusterNm}/gke-load-tester/kubernetes-config/locust-master-service.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"kubectl apply -f {clusterNm}/mlocust-app/kubernetes-config/locust-master-service.yaml", shell=True, capture_output=True)
         msgs.append(get_resp(out))
-        out = subprocess.run(f"kubectl apply -f {clusterNm}/gke-load-tester/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
+        out = subprocess.run(f"kubectl apply -f {clusterNm}/mlocust-app/kubernetes-config/locust-worker-controller.yaml", shell=True, capture_output=True)
         msgs.append(get_resp(out))
 
     except Exception as e:
