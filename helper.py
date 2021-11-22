@@ -169,7 +169,7 @@ def get_ip(clusterNm, zone):
         # Need to get keep trying till we get an actual external IP
         while True:
             # Not using the python formatted string notation because of the print $NF
-            out = subprocess.run("echo \"http://`kubectl get svc locust-master -o yaml | grep ip | awk -F\":\" '{print $NF}' | awk '{$1=$1};1'`:8089\"", shell=True, capture_output=True)
+            out = subprocess.run("echo \"http://`kubectl get svc locust-master -o yaml | grep ip: | awk -F\":\" '{print $NF}' | awk '{$1=$1};1'`:8089\"", shell=True, capture_output=True)
             if out.stdout.decode("utf-8").strip() == "http://:8089":
                 msgs.append(get_resp('IP missing. Trying again after 15s.'))
                 time.sleep(15)

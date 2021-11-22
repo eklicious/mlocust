@@ -1,5 +1,6 @@
 *.cer
 *.json
 gke-load-tester-env/
+mlocust-env/
 uploads/
 __pycache__/

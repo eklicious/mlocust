@@ -3,6 +3,7 @@
 .cache
 
 gke-load-tester-env/
+mlocust-env/
 __pycache__/
 uploads/
 README.txt

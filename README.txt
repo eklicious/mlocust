@@ -8,8 +8,8 @@ You will most likely have to enable the nlp api when you execute the script. It 
 LOCAL DEVELOPMENT:
 You only need to set up the venv and pip install once if nothings changed with the requirements file.
 
-python3 -m venv gke-load-tester-env 
-source gke-load-tester-env/bin/activate
+python3 -m venv mlocust-env 
+source mlocust-env/bin/activate
 python -m pip install -r requirements.txt
 flask run
 deactivate
@@ -36,7 +36,7 @@ OUTSTANDING STUFF:
 1. Add Google SSO auth via Realm to the python app
 	Figure out how to make cluster names unique so folks don't conflict, e.g. prefix cluster names with the authenticated users email
 	Update MDB auditing to include email for userId field after Google auth done
-2. Update the other gke locust project to add a really good pyfaker example to the locustfile.py
+2. Update the other mlocust sample app project to add a really good pyfaker example to the locustfile.py
 3. Do we bother removing all the private key files from the container, e.g. Docker secrets (https://medium.com/trabe/use-your-local-ssh-keys-inside-a-docker-container-ea1d117515dc) or https://stackoverflow.com/questions/18136389/using-ssh-keys-inside-docker-container
 4. Migrate off of my personal account: 
 	Figure out which project / service account / orgs / etc. to use, e.g. noc account
