@@ -36,9 +36,10 @@ OUTSTANDING STUFF:
 1. Add Google SSO auth via Realm to the python app
 	Figure out how to make cluster names unique so folks don't conflict, e.g. prefix cluster names with the authenticated users email
 	Update MDB auditing to include email for userId field after Google auth done
-2. Update the other mlocust sample app project to add a really good pyfaker example to the locustfile.py
-3. Do we bother removing all the private key files from the container, e.g. Docker secrets (https://medium.com/trabe/use-your-local-ssh-keys-inside-a-docker-container-ea1d117515dc) or https://stackoverflow.com/questions/18136389/using-ssh-keys-inside-docker-container
-4. Migrate off of my personal account: 
+2. Consolidate the upload locust/reqts file into a multi-upload so we don't have to do it twice.
+3. Update the other mlocust sample app project to add a really good pyfaker example to the locustfile.py
+4. Do we bother removing all the private key files from the container, e.g. Docker secrets (https://medium.com/trabe/use-your-local-ssh-keys-inside-a-docker-container-ea1d117515dc) or https://stackoverflow.com/questions/18136389/using-ssh-keys-inside-docker-container
+5. Migrate off of my personal account: 
 	Figure out which project / service account / orgs / etc. to use, e.g. noc account
 	Generate a service account private key file
 	The service account needs all api's enabled which is a 1 time thing.
