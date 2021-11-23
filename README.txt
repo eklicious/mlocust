@@ -6,7 +6,7 @@ Before you get started, you need to set up Google so you can run the api calls: 
 You will most likely have to enable the nlp api when you execute the script. It basically gives you a URL to go to.
 
 LOCAL DEVELOPMENT:
-You only need to set up the venv and pip install once if nothings changed with the requirements file.
+You'll need to install cli's and tools by following the steps inside of run.sh excluding the last step that tries to run flask. You only need to set up the venv and pip install once if nothings changed with the requirements file.
 
 python3 -m venv mlocust-env 
 source mlocust-env/bin/activate
