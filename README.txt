@@ -46,3 +46,4 @@ OUTSTANDING STUFF:
 	The service account needs all api's enabled which is a 1 time thing.
 7. Ability to deploy the k8s clusters in other clouds. This is harder because we'd have to maintain separate scripts specific to each cloud.
 8. Add the ability to pull existing templates, e.g. {author:, desc:, body:}, from our db that people can select to dynamically create a pyfaker locust file to load specific types of data, e.g. pharma.
+9. How to scale this so new SAs and Mgrs are aware of this tool? Add to global trello boards?
