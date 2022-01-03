@@ -1,4 +1,5 @@
 pymongo
 dnspython
 flask
+flask-cors
 google-cloud-storage

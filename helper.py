@@ -6,10 +6,8 @@ import sys
 # from flask import Flask
 # import logging
 
-uri = "mongodb+srv://shared.3zdou.mongodb.net/myFirstDatabase?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
-client = MongoClient(uri,
-                     tls=True,
-                     tlsCertificateKeyFile='X509-cert-716885866134776497-msideaudit.cer')
+client = MongoClient("mongodb+srv://test:test@cluster0.rja1m.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+
 db = client['mside']
 audit = db['audit']
 
@@ -272,7 +270,7 @@ def calc_workers(currentRPS):
         msgs.append(get_ex(e))
     return msgs
 
-projectId = "mside-287120"
+projectId = "oblivion02"
 clusterNm = "abc123"
 vmSize = "c2-standard-4"
 zone = "us-east4-a"

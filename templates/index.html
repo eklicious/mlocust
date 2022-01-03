@@ -3,8 +3,10 @@
     <h1>1) Upload your Locust file 2) Upload your requirements.txt file 3) Initialize your GKE cluster 4) Modify your immediate requests/sec to scale your testing 5) PLEASE CLEANUP EVERYTHING WHEN DONE!</h1>
     <form method=post enctype=multipart/form-data>
       Cluster Name: <input type="text" id="clusterNm" name="clusterNm" value={{ request.args.get('clusterNm') if request.args.get('clusterNm') }}>&nbsp;&nbsp;&nbsp&nbsp;
-      <input type=file name=file>
-      <input type=submit value="Upload your locust file and requirements file here"><br/>
+      <input type=file name=fileA>
+      <input type=submit value="Upload your locust file file here"><br/>
+      <input type=file name=fileB>
+      <input type=submit value="Upload your requirements file here"><br/>
 
       <label for="zone">Select a Zone close to your MDB Cluster:</label>
       <select name="zone" id="zone">
