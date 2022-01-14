@@ -38,7 +38,7 @@ def get_resp(out):
         # plain old string message
         print(out, file=sys.stdout)
         # app.logger.error(out)
-        return "Log: " + out        
+        return "Log: " + out
     elif out.returncode == 0:
         # output the stdout only as a success message
         print(format(out.stdout), file=sys.stdout)
@@ -62,7 +62,7 @@ def create_cluster(clusterNm, vmType, zone, maxRPS):
         out = subprocess.run(f"gcloud container clusters create {clusterNm} --zone {zone} --scopes \"https://www.googleapis.com/auth/cloud-platform\" --machine-type \"{vmType}\" --num-nodes \"1\" --enable-autoscaling --min-nodes \"1\" --max-nodes \"{maxNodes}\" --addons HorizontalPodAutoscaling,HttpLoadBalancing", shell=True, capture_output=True)
         msgs.append(get_resp(out))
     except Exception as e:
-        msgs.append(get_ex(out)) 
+        msgs.append(get_ex(out))
     return msgs
 
 def set_delete_cluster(clusterNm, zone, ttlSecs):
@@ -84,7 +84,7 @@ def get_credentials(clusterNm, zone):
         msgs.append(get_ex(out))
     return msgs
 
-def deploy(projectId, clusterNm, vmSize, zone, maxRPS, currentRPS, ttlSecs):
+def deploy(username,projectId, clusterNm, vmSize, zone, maxRPS, currentRPS, ttlSecs):
     msgs = ["Deploying codes and/or clusters"]
     try:
         # Create a subdirectory for the cluster name. Each cluster gets its own build
@@ -97,7 +97,7 @@ def deploy(projectId, clusterNm, vmSize, zone, maxRPS, currentRPS, ttlSecs):
         out = subprocess.run(f"gcloud container clusters describe {clusterNm} --zone {zone}", shell=True, capture_output=True)
         if out.returncode == 0:
             # Audit any executions
-            audit.insert_one({"type":"mLocust", "action":"redeploy", "userId":"Add this later with auth", "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
+            audit.insert_one({"type":"mLocust", "action":"redeploy", "userId":username, "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
 
             # cluster already exists. Scale to 0 then to workers
             msgs.append(get_resp(f"Cluster already exists. Just scale nodes down and rescale back up."))
@@ -107,16 +107,19 @@ def deploy(projectId, clusterNm, vmSize, zone, maxRPS, currentRPS, ttlSecs):
             scale_workers(clusterNm, zone, currentRPS)
         else:
             # Audit any executions
-            audit.insert_one({"type":"mLocust", "action":"deploy", "userId":"Add this later with auth", "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
+            audit.insert_one({"type":"mLocust",  "msgs":msgs,"action":"deploy", "userId":username, "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
 
             # build cluster out from scratch
             msgs.append(create_cluster(clusterNm, vmSize, zone, maxRPS))
+            audit.insert_one({"type":"mLocust", "msgs":msgs,"action":"clusterCreate", "userId":username, "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
 
             # Now configure and deploy the master and worker nodes
             msgs.append(deploy_nodes(projectId, clusterNm, zone))
+            audit.insert_one({"type":"mLocust",  "msgs":msgs,"action":"deployNodes", "userId":username, "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
 
             # Present the External IP so we can access the locust portal
             msgs.append(get_ip(clusterNm, zone))
+            audit.insert_one({"type":"mLocust", "msgs":msgs, "action":"get_ip","result":get_ip(clusterNm, zone), "userId":username, "msg":{"clusterNm":clusterNm, "vmSize":vmSize, "zone":zone, "maxRPS":maxRPS, "currentRPS":currentRPS, "ttlSecs":ttlSecs}})
 
             # Scale the workers if the RPS target is higher than 1000
             if currentRPS>1000:
@@ -277,37 +280,3 @@ zone = "us-east4-a"
 ttlSecs = 10
 maxRPS = 1
 currentRPS = 1
-
-#print('Creating Cluster')
-#create_cluster(clusterNm, vmSize, zone, maxRPS)
-
-# There is going to be a concurrency issue because if 2 people are working against this same code they will start overwriting each others kubeconfig
-# We will need to run this prior to every kubectl command unfortunately and serialize the calls if possible
-#print('Setting kubeconfig with cluster credentials')
-#get_credentials(clusterNm, zone)
-
-# Now grab sample codes per cluster
-# We could potentially have one control plane instance launch 2+ clusters 
-#print('Cloning base code for build')
-#deploy(projectId, clusterNm, vmSize, zone, maxRPS, currentRPS, ttlSecs)
-
-# Now configure and deploy the master and worker nodes
-#print('Configure the master and worker nodes')
-#deploy_nodes(projectId, clusterNm, zone)
-
-# Present the External IP so we can access the locust portal
-#print('Get External IP')
-#get_ip(clusterNm, zone)
-
-#print('Deleting Cluster after TTL (secs)')
-#set_delete_cluster(clusterNm, zone, ttlSecs)
-
-# Test scaling
-#scale_workers(clusterNm, zone, 2)
-#get_pods(clusterNm, zone)
-
-# Test cleanup
-#cleanup(clusterNm, zone)
-#calc_nodes(34567)
-
-print('done')

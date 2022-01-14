@@ -3,7 +3,7 @@
 ########################################################################
 #
 # Many of you like to get fancy by creating separate object classes
-# and external file dependencies, e.g. json files, 
+# and external file dependencies, e.g. json files,
 # I discourage you from doing that because there are file path
 # reference issues that make things difficult when you containerize
 # and deploy to gke. Try to keep everything in this 1 file.
@@ -27,7 +27,7 @@ import time
 
 ########################################################################
 # Global Static Variables that can be accessed without referencing self
-# Change the connection string to point to the correct db 
+# Change the connection string to point to the correct db
 # and double check the readpreference etc.
 ########################################################################
 try:
@@ -71,7 +71,7 @@ class MetricsLocust(User):
     def _async_find(self):
         # Note that you don't pass in self despite the signature above
         tic = self.get_time();
-            
+
         try:
             # Get the record from the TEST collection now
             coll.find_one({}, {"_id":"10006546"})

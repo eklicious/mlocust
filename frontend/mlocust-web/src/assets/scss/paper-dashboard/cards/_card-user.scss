@@ -1,0 +1,60 @@
+.card-user{
+    .image{
+        height: 130px;
+
+      img {
+        border-radius: 12px;
+      }
+    }
+
+    .author{
+        text-align: center;
+        text-transform: none;
+        margin-top: -77px;
+
+        a +  p.description{
+            font-weight: bold;
+            color: black !important;
+            letter-spacing: 3px;
+            margin-top: -7px;
+        }
+
+        p.description{
+          font-weight: bold;
+          color: black !important;
+          letter-spacing: 3px;
+        }
+    }
+
+    .avatar{
+        width: 10em;
+        height: auto;
+        border: 1px solid $white-color;
+        position: relative;
+        border-radius: 50px;
+    }
+
+    .card-body{
+        min-height: 140px;
+    }
+
+    hr{
+        margin: 5px 15px 15px;
+    }
+
+    .card-body + .card-footer {
+      padding-top: 0;
+    }
+
+    .card-footer {
+      h5 {
+        font-size: 1.25em;
+        margin-bottom: 0;
+      }
+    }
+
+    .button-container{
+        margin-bottom: 6px;
+        text-align: center;
+    }
+}
